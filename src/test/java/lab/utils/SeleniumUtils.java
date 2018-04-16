@@ -63,4 +63,8 @@ public class SeleniumUtils {
     public WebDriver getFirefoxDriver() {
         return firefoxDriver;
     }
+
+    public ArrayList<WebDriver> getWebDrivers() {
+        return webDrivers;
+    }
 }
