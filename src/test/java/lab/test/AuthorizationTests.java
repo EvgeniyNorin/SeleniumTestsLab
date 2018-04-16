@@ -8,7 +8,7 @@ import org.openqa.selenium.WebDriver;
 
 import static org.junit.Assert.assertTrue;
 
-class AutorizationTests {
+class AuthorizationTests {
 
     SeleniumUtils utils = new SeleniumUtils();
 
