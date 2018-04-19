@@ -20,17 +20,17 @@ public class SeleniumUtils {
 
     private WebDriver chromeDriver;
 
-    private ArrayList<WebDriver> webDrivers = new ArrayList<WebDriver>();
+    private ArrayList<WebDriver> webDrivers = new ArrayList<>();
 
     public SeleniumUtils() {
         System.setProperty("webdriver.gecko.driver", "C:\\drivers\\geckodriver.exe");
         System.setProperty("webdriver.chrome.driver", "C:\\drivers\\chromedriver.exe");
         firefoxDriver = new FirefoxDriver();
         chromeDriver = new ChromeDriver();
-        webDrivers.add(chromeDriver);
         webDrivers.add(firefoxDriver);
+        webDrivers.add(chromeDriver);
         for (WebDriver webDriver : webDrivers) {
-            webDriver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+            webDriver.manage().timeouts().implicitlyWait(25, TimeUnit.SECONDS);
             webDriver.get(baseUrl);
         }
     }

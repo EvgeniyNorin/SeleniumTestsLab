@@ -16,7 +16,7 @@ class AuthorizationTests {
     void tryWithWrongLoginAndPass() {
         utils.auth(utils.getValidLogin(), utils.getValidPassword());
         for (WebDriver driver: utils.getWebDrivers()) {
-            String text = driver.findElement(By.xpath("/html/body/div[4]/div[1]/div/div/div[2]/div[2]/div/h3")).getText();
+            String text = driver.findElement(By.xpath("//div[4]/div[1]/div/div/div[2]/div[2]/div/h3")).getText();
             assertTrue(text.contains("Your repositories"));
         }
     }
@@ -25,7 +25,7 @@ class AuthorizationTests {
     void tryWithRightLoginAndPass() {
         utils.auth("any", "path");
         for (WebDriver driver: utils.getWebDrivers()) {
-            String text = driver.findElement(By.xpath("/html/body/div[3]/div[1]/div/form/div[2]/div/div")).getText();
+            String text = driver.findElement(By.xpath("//div[3]/div[1]/div/form/div[2]/div/div")).getText();
             assertTrue(text.contains("Incorrect username or password."));
         }
     }
@@ -33,9 +33,9 @@ class AuthorizationTests {
     @Test
     @DisplayName("we are logging out and try to do any auth-user action")
     void logout() {
-        String imgButton = "/html/body/div[1]/header/div/div[2]/div[2]/ul/li[3]/details/summary";
-        String signOut = "/html/body/div[1]/header/div/div[2]/div[2]/ul/li[3]/details/ul/li[9]/form/button";
-        String signIn = "/html/body/div[1]/header/div/div[2]/div/span/div/a[1]";
+        String imgButton = "//div/div[2]/div[2]/ul/li[3]/details/summary";
+        String signOut = "//div/div[2]/div[2]/ul/li[3]/details/ul/li[9]/form/button";
+        String signIn = "//div/div[2]/div/span/div/a[1]";
         utils.auth();
         for (WebDriver driver : utils.getWebDrivers()) {
             driver.findElement(By.xpath(imgButton)).click();
