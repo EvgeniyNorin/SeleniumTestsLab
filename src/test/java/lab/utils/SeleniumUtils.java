@@ -44,6 +44,12 @@ public class SeleniumUtils {
         }
     }
 
+    public void closeAll() {
+        for(WebDriver driver : webDrivers) {
+            driver.close();
+        }
+    }
+
     public void auth() {
         auth(getValidLogin(), getValidPassword());
     }

@@ -1,6 +1,7 @@
 package lab.test;
 
 import lab.utils.SeleniumUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -45,4 +46,8 @@ class AuthorizationTests {
 
     }
 
+    @AfterEach
+    void close() {
+        utils.closeAll();
+    }
 }

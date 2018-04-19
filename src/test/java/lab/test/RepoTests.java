@@ -1,13 +1,14 @@
 package lab.test;
 
 import lab.utils.SeleniumUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.*;
-import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 
@@ -16,13 +17,9 @@ public class RepoTests {
 
     String popularRepoName = "linux";
 
-    String unstarButton = "//div[1]/div/ul/li[2]/div/form[1]/button";
+    By unstarButton = By.xpath("//div[1]/div/ul/li[2]/div/form[1]/button");
 
     String repoName = "test";
-
-    void unstar(WebDriver driver) {
-        driver.findElement(By.xpath(unstarButton)).click();
-    }
 
     By plusImgXpath = By.xpath("//div[2]/div[2]/ul/li[2]/details/summary");
 
@@ -44,39 +41,39 @@ public class RepoTests {
 
     By deleteConfirmMessage = By.xpath("//html/body/div[3]/div/div[contains(text(), '')]");
 
+    By xpathOfSearch = By.xpath("//div[2]/div[1]/div/div/form/label/input[1]");
+
+    By starredRepoSearch = By.cssSelector("input.form-control:nth-child(2)");
+
+    By starButton = By.cssSelector(".unstarred > button:nth-child(4)");
+
     @BeforeEach
     void auth() {
         utils.auth();
     }
 
     @Test
-    void findStaredRepo() {
+    void findStaredRepoTest() {
         for (WebDriver driver : utils.getWebDrivers()) {
             driver.findElement(By.xpath("//ul/li[3]/details/summary/img")).click();
             driver.findElement(By.xpath("//div[2]/ul/li[3]/details/ul/li[4]/a")).click();
-            driver.findElement(By.xpath("//div/div[2]/div[4]/div[1]/form/input[2]")).sendKeys("akka");
-            driver.findElement(By.xpath("//div/div[2]/div[4]/div[1]/form/input[2]")).sendKeys(Keys.ENTER);
-            assertTrue(driver.findElement(By.xpath("//span[contains(text(), 'akka')]")).getText().contains("akka"));
+            driver.findElement(starredRepoSearch).sendKeys("akka");
+            driver.findElement(starredRepoSearch).sendKeys(Keys.ENTER);
+            assertEquals(driver.findElement(By.xpath("//div/div[2]/div[3]/div[2]/div/strong[1]")).getText(), "1");
         }
     }
 
     @Test
-    void starringRepo() {
+    void starringRepoTest() {
         for (WebDriver driver : utils.getWebDrivers()) {
-            By xpathOfSearch = By.xpath("//div[2]/div[1]/div/div/form/label/input[1]");
-            driver.findElement(xpathOfSearch).click();
-            driver.findElement(xpathOfSearch).sendKeys(popularRepoName);
-            driver.findElement(xpathOfSearch).sendKeys(Keys.ENTER);
-            driver.findElement(By.partialLinkText("torvalds")).click();
-//            driver.findElement(By.xpath("//a/em[text()='linux']/parent::a[contains(text(), 'torvalds')]")).click();
-            driver.findElement(By.xpath("//div[1]/div/ul/li[2]/div/form[2]/button")).click();
-            assertTrue(driver.findElement(By.xpath(unstarButton)).isEnabled());
+            starRepo(driver);
+            assertTrue(driver.findElement(unstarButton).isEnabled());
             unstar(driver);
         }
     }
 
     @Test
-    void createRepo() {
+    void createRepoTest() {
         for(WebDriver driver: utils.getWebDrivers()) {
             WebDriverWait wait = new WebDriverWait(driver, 2);
             driver.findElement(plusImgXpath).click();
@@ -91,7 +88,7 @@ public class RepoTests {
     }
 
     @Test
-    void deleteRepo() {
+    void deleteRepoTest() {
         for(WebDriver driver: utils.getWebDrivers()) {
             createBeforeDeleting(driver);
             driver.findElement(settings).click();
@@ -99,6 +96,7 @@ public class RepoTests {
             driver.findElement(deleteVerificationInput).click();
             driver.findElement(deleteVerificationInput).sendKeys("test");
             ((JavascriptExecutor) driver).executeScript("document.getElementsByClassName(\"btn btn-block btn-danger\")[2].disabled = null");
+//            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", confirm);
             driver.findElement(confirm).click();
             assertTrue(driver.findElement(deleteConfirmMessage).getText().contains("was successfully deleted"));
         }
@@ -121,5 +119,27 @@ public class RepoTests {
         driver.findElement(deleteVerificationInput).sendKeys("test");
         ((JavascriptExecutor) driver).executeScript("document.getElementsByClassName(\"btn btn-block btn-danger\")[2].disabled = null");
         driver.findElement(confirm).click();
+    }
+
+    private void starRepo(WebDriver driver) {
+        By linux = By.partialLinkText("torvalds");
+        WebDriverWait wait = new WebDriverWait(driver, 2);
+        driver.findElement(xpathOfSearch).click();
+        driver.findElement(xpathOfSearch).sendKeys(popularRepoName);
+        driver.findElement(xpathOfSearch).sendKeys(Keys.ENTER);
+        wait.until(ExpectedConditions.elementToBeClickable(linux));
+        driver.findElement(linux).click();
+//            driver.findElement(By.xpath("//a/em[text()='linux']/parent::a[contains(text(), 'torvalds')]")).click();
+        driver.findElement(starButton).click();
+    }
+
+
+    private void unstar(WebDriver driver) {
+        driver.findElement(unstarButton).click();
+    }
+
+    @AfterEach
+    void close() {
+        utils.closeAll();
     }
 }
